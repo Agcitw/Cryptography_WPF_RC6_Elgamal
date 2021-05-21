@@ -1,0 +1,100 @@
+﻿<Page x:Class="CryptoModule2.Views.Pages.HashPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CryptoModule2.Views.Pages" xmlns:fa="http://schemas.fontawesome.io/icons/" xmlns:convert="clr-namespace:CryptoModule2.Views.Converters"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="HashPage">
+    
+    <Page.Resources>
+        <convert:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Page.Resources>
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
+
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0">
+            <TextBox TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                          Margin="10,15"  MaxLength="10000"
+                     IsEnabled="{Binding IsCalc, Converter={StaticResource InverseBooleanConverter}}">
+                <TextBox.Style>
+                    <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                        <Style.Resources>
+                            <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Top" Stretch="None">
+                                <VisualBrush.Visual>
+                                    <Label Content="Введите текст менее 1000 символов" Foreground="Gray" />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Style.Resources>
+                        <Style.Triggers>
+                            <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                            </Trigger>
+                            <Trigger Property="Text" Value="{x:Null}">
+                                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="Background" Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+
+            </TextBox>
+        </Grid>
+        <fa:ImageAwesome Icon="Spinner" Spin="{Binding IsCalc}" 
+                         SpinDuration="4" 
+                         Grid.Row="0" 
+                         Foreground="Gray"  
+                         Width="100"
+                         Visibility="{Binding IsCalc, Converter={StaticResource BoolToVis}}"/>
+
+
+        <Grid Grid.Row="1">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <StackPanel.Resources>
+
+                    <Style TargetType="Button">
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Width" Value="160"/>
+                        <Setter Property="Height" Value="30"/>
+                        <Setter Property="Margin" Value="10"/>
+                        <Setter Property="IsEnabled" Value="{Binding IsCalc, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                    </Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Margin" Value="0,0,0,0"/>
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="10"/>
+                    </Style>
+
+                </StackPanel.Resources>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Получить хэш из текста"
+                        Command="{Binding HashTextCommand}"/>
+                    <Button Content="Получить хэш из файла"
+                         Command="{Binding HashFileCommand}"/>
+                </StackPanel>
+
+                <TextBlock Text="Результат" />
+                <TextBox Text="{Binding OutputText}" 
+                         IsReadOnly="True"
+                         Width="600"/>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</Page>
