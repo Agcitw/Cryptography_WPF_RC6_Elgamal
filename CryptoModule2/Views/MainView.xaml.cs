@@ -37,7 +37,7 @@ namespace CryptoModule2.Views
 		{
 			InitializeComponent();
 			UpdateKey();
-			Mode.UpdateIv();
+			Mode.UpdateIv(_keyLength / 8);
 			Key128.IsChecked = true;
 		}
 
@@ -154,7 +154,7 @@ namespace CryptoModule2.Views
 		{
 			_key = Helper.GenerateRandomKey(_keyLength / 8);
 			KeyTextBox.Password = _key;
-			Mode.UpdateIv();
+			Mode.UpdateIv(_keyLength / 8);
 			Iv = Encoding.UTF8.GetString(Mode.Iv);
 		}
 

@@ -23,10 +23,7 @@ namespace CryptoModule2.Models.Ciphers.Symmetric
 			GenerateKey(keyLength, key);
 		}
 
-		public static int Size()
-		{
-			return 16;
-		}
+		public const int Size = 16;
 
 		private static uint RightShift(uint value, int shift)
 		{
@@ -81,7 +78,7 @@ namespace CryptoModule2.Models.Ciphers.Symmetric
 			return arrayBytes;
 		}
 
-		public IEnumerable<byte> EncodeBlock(byte[] byteText)
+		public IEnumerable<byte> EncryptBlock(byte[] byteText)
 		{
 			var textLength = byteText.Length;
 			while (textLength % 16 != 0)
@@ -121,7 +118,7 @@ namespace CryptoModule2.Models.Ciphers.Symmetric
 			return cipherText;
 		}
 
-		public IEnumerable<byte> DecodeBlock(byte[] cipherText)
+		public IEnumerable<byte> DecryptBlock(byte[] cipherText)
 		{
 			int i;
 			var plainText = new byte[cipherText.Length];
