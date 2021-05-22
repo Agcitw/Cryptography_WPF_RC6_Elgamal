@@ -145,10 +145,10 @@
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0">
                                 <Label Content="Public parameters" />
-                                <TextBlock Text="Modulus" />
+                                <TextBlock Text="P" />
                                 <TextBox IsReadOnly="True"
                                          Text="{Binding Parameters.P, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Text="Generator" />
+                                <TextBlock Text="G" />
                                 <TextBox IsReadOnly="True"
                                          Text="{Binding Parameters.G, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <Button Content="Refresh public parameters"

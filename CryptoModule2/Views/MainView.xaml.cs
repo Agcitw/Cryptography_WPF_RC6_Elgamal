@@ -92,25 +92,18 @@ namespace CryptoModule2.Views
 			reading.Wait();
 			_rc6 = _key.Length == _keyLength ? new Rc6(_keyLength, Encoding.UTF8.GetBytes(_key)) : new Rc6(_keyLength);
 			_encryptionMode = new Mode(_rc6);
-			Task k = Task.Run(() => _encryptionMode.EncryptEbc(_userFile));
-			switch (_mode)
+			Task k = _mode switch
 			{
-				case CipherMode.Cbc:
-					k = _encryptionMode.EncryptCbc(_userFile);
-					break;
-				case CipherMode.Cfb:
-					k = _encryptionMode.EncryptCfb(_userFile);
-					break;
-				case CipherMode.Ofb:
-					k = _encryptionMode.EncryptOfb(_userFile);
-					break;
-				case CipherMode.Ecb:
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-			k.Wait();
-			File.WriteAllBytes(_filePath + ".enc", Mode.TextAfter.ToArray());
+				CipherMode.Cbc => _encryptionMode.EncryptCbc(_userFile),
+				CipherMode.Cfb => _encryptionMode.EncryptCfb(_userFile),
+				CipherMode.Ofb => _encryptionMode.EncryptOfb(_userFile),
+				CipherMode.Ecb => _encryptionMode.EncryptEcb(_userFile),
+				_ => throw new ArgumentOutOfRangeException()
+			};
+			new Thread(() => {
+				k.Wait();
+				File.WriteAllBytes(_filePath + ".enc", Mode.TextAfter.ToArray());
+			}).Start();
 		}
 
 		private void Decrypt(object sender, RoutedEventArgs e)
@@ -124,25 +117,18 @@ namespace CryptoModule2.Views
 			ProgressBar.Value++;
 			worker.RunWorkerAsync();
 			reading.Wait();
-			Task d = Task.Run(() => _encryptionMode.DecryptEbc(_userFile));
-			switch (_mode)
+			Task d = _mode switch
 			{
-				case CipherMode.Cbc:
-					d = _encryptionMode.DecryptCbc(_userFile);
-					break;
-				case CipherMode.Cfb:
-					d = _encryptionMode.DecryptCfb(_userFile);
-					break;
-				case CipherMode.Ofb:
-					d = _encryptionMode.DecryptOfb(_userFile);
-					break;
-				case CipherMode.Ecb:
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-			d.Wait();
-			File.WriteAllBytes(_filePath + ".dec", Mode.TextBefore.ToArray());
+				CipherMode.Cbc => _encryptionMode.DecryptCbc(_userFile),
+				CipherMode.Cfb => _encryptionMode.DecryptCfb(_userFile),
+				CipherMode.Ofb => _encryptionMode.DecryptOfb(_userFile),
+				CipherMode.Ecb => _encryptionMode.DecryptEcb(_userFile),
+				_ => throw new ArgumentOutOfRangeException()
+			};
+			new Thread(() => {
+				d.Wait();
+				File.WriteAllBytes(_filePath + ".dec", Mode.TextBefore.ToArray());
+			}).Start();
 		}
 
 		private void UpdateKey_OnClick(object sender, RoutedEventArgs e)

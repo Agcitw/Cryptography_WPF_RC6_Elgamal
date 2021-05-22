@@ -2,7 +2,7 @@
 
 namespace CryptoModule2.Models.Ciphers.Keys
 {
-	public class KeyPair
+	public readonly struct KeyPair
 	{
 		public KeyPair(ElgamalKey publicKey, ElgamalKey privateKey)
 		{

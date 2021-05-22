@@ -22,7 +22,6 @@ namespace CryptoModule2.Models.Ciphers.Modes
 		{
 			Iv = GenerateIv(size);
 		}
-
 		private static byte[] GenerateIv(int size)
 		{
 			var b = new byte[size];
@@ -40,22 +39,25 @@ namespace CryptoModule2.Models.Ciphers.Modes
 			return data;
 		}
 
-		public byte[] EncryptEbc(byte[] data)
+		public async Task<byte[]> EncryptEcb(byte[] data)
 		{
 			ExpandData(ref data);
 			var result = new List<byte>();
 			for (var i = 0; i < data.Length; i += Rc6.Size)
-				result.AddRange(_algorithm.EncryptBlock(data.Skip(i).Take(Rc6.Size).ToArray()));
+			{
+				await Task.Run(() => result.AddRange(_algorithm.EncryptBlock(data.Skip(i).Take(Rc6.Size).ToArray())));
+			}
 			TextAfter = result;
 			return result.ToArray();
 		}
-
-		public byte[] DecryptEbc(byte[] blocks)
+		public async Task<byte[]> DecryptEcb(byte[] blocks)
 		{
 			ExpandData(ref blocks);
 			var result = new List<byte>();
 			for (var i = 0; i < blocks.Length; i += Rc6.Size)
-				result.AddRange(_algorithm.DecryptBlock(blocks.Skip(i).Take(Rc6.Size).ToArray()));
+			{
+				await Task.Run(() => result.AddRange(_algorithm.DecryptBlock(blocks.Skip(i).Take(Rc6.Size).ToArray())));
+			}
 			TextBefore = result;
 			return result.ToArray();
 		}
@@ -69,15 +71,13 @@ namespace CryptoModule2.Models.Ciphers.Modes
 			{
 				for (var j = 0; j < Rc6.Size; j++)
 					messageCopy[j] ^= prev[j];
-				await Task.Run(
-					() => result.AddRange(_algorithm.EncryptBlock(message.Skip(i).Take(Rc6.Size).ToArray())));
+				await Task.Run(() => result.AddRange(_algorithm.EncryptBlock(message.Skip(i).Take(Rc6.Size).ToArray())));
 				prev = result.Skip(i).Take(Rc6.Size).ToArray();
 			}
 
 			TextAfter = result;
 			return result.ToArray();
 		}
-
 		public async Task<byte[]> DecryptCbc(byte[] code)
 		{
 			var messageCopy = (byte[]) code.Clone();
@@ -111,7 +111,6 @@ namespace CryptoModule2.Models.Ciphers.Modes
 			TextAfter = result;
 			return result.ToArray();
 		}
-
 		public async Task<byte[]> DecryptCfb(byte[] code)
 		{
 			var messageCopy = ExpandData(ref code);
@@ -145,7 +144,6 @@ namespace CryptoModule2.Models.Ciphers.Modes
 			TextAfter = result;
 			return result.ToArray();
 		}
-
 		public async Task<byte[]> DecryptOfb(byte[] code)
 		{
 			return await Task.Run(() => EncryptOfb(code));

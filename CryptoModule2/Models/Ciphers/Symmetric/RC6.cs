@@ -12,24 +12,22 @@ namespace CryptoModule2.Models.Ciphers.Symmetric
 		private const uint Q32 = 0x9E3779B9;
 		private static readonly uint[] RoundKey = new uint[2 * Rounds + 4];
 		private static byte[] _mainKey;
+		
+		public const int Size = 16;
 
 		public Rc6(int keyLength)
 		{
 			GenerateKey(keyLength, null);
 		}
-
 		public Rc6(int keyLength, byte[] key)
 		{
 			GenerateKey(keyLength, key);
 		}
-
-		public const int Size = 16;
-
+		
 		private static uint RightShift(uint value, int shift)
 		{
 			return (value >> shift) | (value << (W - shift));
 		}
-
 		private static uint LeftShift(uint value, int shift)
 		{
 			return (value << shift) | (value >> (W - shift));
@@ -65,7 +63,7 @@ namespace CryptoModule2.Models.Ciphers.Symmetric
 				j = (j + 1) % wordsCount;
 			}
 		}
-
+		
 		private static byte[] ToArrayBytes(IReadOnlyList<uint> uints, int length)
 		{
 			var arrayBytes = new byte[length * 4];
@@ -107,17 +105,14 @@ namespace CryptoModule2.Models.Ciphers.Symmetric
 					c = d;
 					d = temp;
 				}
-
 				a += RoundKey[2 * Rounds + 2];
 				c += RoundKey[2 * Rounds + 3];
 				var tempWords = new[] {a, b, c, d};
 				var block = ToArrayBytes(tempWords, 4);
 				block.CopyTo(cipherText, i);
 			}
-
 			return cipherText;
 		}
-
 		public IEnumerable<byte> DecryptBlock(byte[] cipherText)
 		{
 			int i;
@@ -142,14 +137,12 @@ namespace CryptoModule2.Models.Ciphers.Symmetric
 					c = RightShift(c - RoundKey[2 * j + 1], (int) t) ^ u;
 					a = RightShift(a - RoundKey[2 * j], (int) u) ^ t;
 				}
-
 				d -= RoundKey[1];
 				b -= RoundKey[0];
 				var tempWords = new[] {a, b, c, d};
 				var block = ToArrayBytes(tempWords, 4);
 				block.CopyTo(plainText, i);
 			}
-
 			return plainText;
 		}
 	}
