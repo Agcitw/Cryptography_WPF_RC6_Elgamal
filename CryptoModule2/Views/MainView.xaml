@@ -169,7 +169,7 @@
                                 <RowDefinition Height="70" />
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0">
-                                <Label Content="Боб" />
+                                <Label Content="Bob" />
                                 <TextBlock Text="Private key" />
                                 <TextBox IsReadOnly="True"
                                          Text="{Binding BobKey.PrivateKey.Key, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
